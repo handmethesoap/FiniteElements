@@ -4,45 +4,13 @@
 class FEM
 {
   private:
-    
-  std::vector<double> u;
-  std::vector<double> f;
-  std::vector<double> bc;
-  std::vector< std::vector<double> > local_stiffness;
-  std::vector< std::vector<double> > local_mass;
-  int levels;
-  double step_size;
-  double omega;
+
   
   public:
     
   FEM(int _levels)
   {
-    levels = _levels;
-    int vector_length = 0;
     
-    for(int i = 1; i<= levels; ++i)
-    {
-      vector_length += ((1 << i) - 1);
-    }
-    
-    u.resize(vector_length, 1.0);
-    f.resize(vector_length);
-    local_stiffness.resize(vector_length, std::vector<double>(4));
-    local_mass.resize(vector_length), std::vector<double>(4);
-    
-    step_size = 1.0/(1<<levels);
- 
-    
-    
-    #ifdef DEBUG
-    
-	std::cout << vector_length << std::endl;
-	for( std::vector<double>::const_iterator i = u.begin(); i != u.end(); ++i)
-	{
-	  std::cout << *i << std::endl;
-	}
-    #endif
   }
   
   ~FEM()
@@ -50,26 +18,15 @@ class FEM
     
   }
   
-  void set_boundaries(double left_boundary, double right_boundary)
-  {
-    bc.push_back(left_boundary);
-    bc.push_back(right_boundary);
-    
-    #ifdef DEBUG
-	for( std::vector<double>::const_iterator i = bc.begin(); i != bc.end(); ++i)
-	{
-	  std::cout << *i << std::endl;
-	}
-    #endif
-  }
-  
-  void set_omega(double _omega)
-  {
-    omega = _omega;
-  }
-  
-  void initialise_f(double(* u_initialiser)(double));
-  double rbgs(int level);
-  void print_f(void);
+  void multigrid( double* vector_v, double* vector_b, double* vector_res, const int level, double localstiffness[][4], double localmass[][4], double vector_bc[]);
+  double apply_stencil(double localstiffness[][4],double localmass[][4], double vector_x[], double vector_f[],double vector_bc[],const int cells, int row_index, const double sigma);
+  void init_localstiffness(double localstiffness[][4], int cells);
+  void coarsen_local( double local_fine[][4], double local_coarse[][4], int level);
+  void GSIteration(double* vector_x, double* vector_b, const int cells, double localstiffness[][4], double localmass[][4], double vector_bc[]);
+  void Residual(double* vector_v, double* vector_b, double* vector_res, int cells, double localstiffness[][4], double localmass[][4], double vector_bc[]); //to be implemented
+  void Restriction(double* vector_res, double* vector_b, int level); //to be implemented
+  void Prolongation(double* vector_res, double* vector_v, int level); //to be implemented
+  void Correction(double* vector_v, double* vector_res, int cells); //to be implemented
+  double sigma(double x); //to be implemented
   
 };

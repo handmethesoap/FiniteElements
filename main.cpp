@@ -6,6 +6,12 @@
 
 int main(int argc, char* argv[])
 {
+  if(argc != 2)
+  {
+    std::cout << "A grid size is needed" << std::endl;
+    return 0;
+  }
+  
   int L = atoi(argv[1]);
   
   FEM feproblem(L);
