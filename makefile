@@ -1,5 +1,5 @@
 CC = g++
-CPPFLAGS = -O3 -Wall -Wshadow -ansi -pedantic -DDEBUG $(INCLUDES)
+CPPFLAGS = -O3 -Wall -ansi -pedantic -DDEBUG $(INCLUDES)
 LIBS =
 INCLUDES = -I./Colsamm
 TARGET = fe
